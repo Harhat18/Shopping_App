@@ -1,45 +1,70 @@
-import * as React from 'react';
+import React from 'react';
+import {StyleSheet} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-
-import HomeScreen from './pages/Home';
-import DetailsScreen from './pages/Details';
-import Login from '../src/pages/Login/login';
+import Products from './pages/Products';
+import Detail from './pages/Detail';
+import Login from './pages/Login';
+import {useDispatch, useSelector} from 'react-redux';
+import Loading from './components/Loading';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Stack = createNativeStackNavigator();
-export default function Router() {
+
+const Router = () => {
+  const userSession = useSelector(state => state.user);
+  const isAuthloading = useSelector(state => state.isAuthloading);
+  const dispatch = useDispatch();
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="LoginPage"
-          component={Login}
-          title="Login"
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="ProductsPage"
-          component={HomeScreen}
-          options={{
-            title: 'Dükkan',
-            headerStyle: {backgroundColor: '#90caf9'},
-
-            headerTitleStyle: {color: 'white'},
-          }}
-        />
-        <Stack.Screen
-          name="DetailPage"
-          component={DetailsScreen}
-          options={{
-            title: 'Detay',
-            headerStyle: {backgroundColor: '#90caf9'},
-            headerTitleStyle: {color: 'white'},
-            headerTintColor: 'white',
-          }}
-        />
-      </Stack.Navigator>
+      {isAuthloading ? (
+        <Loading />
+      ) : !userSession ? (
+        <Stack.Navigator>
+          <Stack.Screen
+            name="LoginPage"
+            component={Login}
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack.Navigator>
+      ) : (
+        <Stack.Navigator>
+          <Stack.Screen
+            name="ProductsPage"
+            component={Products}
+            options={{
+              title: 'Shopping Mall',
+              headerStyle: {backgroundColor: '#64b5f6'},
+              headerTitleStyle: {color: 'white'},
+              headerTintColor: 'white',
+              headerRight: () => (
+                <Icon
+                  name="logout"
+                  size={30}
+                  color="white"
+                  onPress={() => dispatch({type: 'REMOVE_USER'})}
+                />
+              ),
+            }}
+          />
+          <Stack.Screen
+            name="DetailPage"
+            component={Detail}
+            options={{
+              title: 'Detay',
+              headerStyle: {backgroundColor: '#64b5f6'},
+              headerTitleStyle: {color: 'white'},
+              headerTintColor: 'white',
+            }}
+          />
+        </Stack.Navigator>
+      )}
     </NavigationContainer>
   );
-}
+};
+
+const styles = StyleSheet.create({});
+
+export default Router;
