@@ -1,6 +1,6 @@
 import React from 'react';
-import {Text, TouchableOpacity, ActivityIndicator} from 'react-native';
-import styles from './Button.style';
+import {TouchableOpacity, Text, ActivityIndicator} from 'react-native';
+import styles from './Button.styles';
 const Button = ({text, onPress, loading}) => {
   return (
     <TouchableOpacity
